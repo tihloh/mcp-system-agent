@@ -1,0 +1,60 @@
+name: Build
+
+on:
+  push:
+    branches: [main, develop, init-cross-platform-agent]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goos: windows
+            goarch: amd64
+            output: mcp-system-agent-windows-amd64.exe
+          - goos: windows
+            goarch: arm64
+            output: mcp-system-agent-windows-arm64.exe
+          - goos: linux
+            goarch: amd64
+            output: mcp-system-agent-linux-amd64
+          - goos: linux
+            goarch: arm64
+            output: mcp-system-agent-linux-arm64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.x'
+          cache: true
+
+      - name: Resolve dependencies
+        run: go mod tidy
+
+      - name: Test
+        run: go test ./...
+
+      - name: Build ${{ matrix.goos }}/${{ matrix.goarch }}
+        env:
+          CGO_ENABLED: '0'
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: go build -trimpath -ldflags="-s -w" -o "dist/${{ matrix.output }}" .
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/${{ matrix.output }}
+          if-no-files-found: error
