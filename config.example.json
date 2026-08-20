@@ -1,0 +1,25 @@
+{
+  "allowed_programs": [
+    "hostname",
+    "whoami",
+    "docker",
+    "git",
+    "go",
+    "php",
+    "ping",
+    "ipconfig",
+    "ip",
+    "df",
+    "free",
+    "uptime",
+    "ls"
+  ],
+  "allowed_directories": [
+    "C:\\AgentWorkspace",
+    "D:\\Projects",
+    "H:\\Projects",
+    "/srv/apps",
+    "/home"
+  ],
+  "timeout_seconds": 30
+}

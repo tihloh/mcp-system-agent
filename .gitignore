@@ -1,0 +1,19 @@
+# Build outputs
+mcp-system-agent
+mcp-system-agent.exe
+mcp-system-agent-*
+
+# Local configuration
+config.json
+.env
+
+# Go
+*.test
+*.out
+coverage.out
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
